@@ -1,31 +1,40 @@
 import React from 'react'
+import getCountry from './geo/country';
 
-const getTime = second => {
-  const date = new Date();
-  date.setTime(second);
-  const time = `${date.getHours()}:${date.getMinutes()}`;
-  return time;
+const getDirection = deg => {
+  if (deg === 0 || deg === 360) {
+    return 'C';
+  } else if (deg > 0 && deg < 90) {
+    return 'СВ';
+  } else if (deg === 90) {
+    return 'В';
+  } else if (deg > 90 && deg < 180) {
+    return 'ЮВ';
+  } else if (deg === 180) {
+    return 'Ю';
+  } else if (deg > 180 && deg < 270) {
+    return 'ЮЗ';
+  } else if (deg === 270) {
+    return 'З';
+  }
+  return 'СЗ';
 }
 
 const Weather = props => {
-  if (props.error) {
-    return (
-      <div>
-        {props.error}
-      </div>
-    );
-  }
+  const src = `http://openweathermap.org/img/w/${props.weather.icon}.png`;
+  
   return (
     <div>
       { props.city &&
-        <div>
-          <p>Место: {props.city}, {props.country}</p>
-          <p>t, c днём: {Math.round(props.temp)}, c</p>
-          <p>t, c ночью: {Math.round(props.temp)}, c</p>
-          <p>Icon</p>
-          <p>Дата: {getTime(props.sunrise)}</p>
-          <p>День недели:</p>
-        </div>
+      <div>
+        <h4>{props.city}</h4> 
+        <p>{getCountry(props.country)}</p>
+        <img src={src} alt='Weather icon'></img>
+        <p>{props.weather.description}</p>
+        <p>{Math.round(props.temp / 10)}&deg;</p>
+        <p>{props.humidity} %</p>
+        <p>{props.wind.speed} м/с {getDirection(props.wind.deg)}</p>
+      </div>
       }
     </div>
   );
